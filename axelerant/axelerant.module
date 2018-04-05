@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * @file
+ * Contains axelerant.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_help().
+ */
+function axelerant_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the axelerant module.
+    case 'help.page.axelerant':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This is demo module for axelerant.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function axelerant_theme() {
+  return [
+    'axelerant' => [
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function axelerant_form_system_site_information_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Get the site api key.
+  $site_api_key = \Drupal::config('system.site')->get('site_api_key');
+  // Add field for site api key.
+  $form['site_information']['site_api_key'] = [
+    '#type' => 'textfield',
+    '#title' => t('Site API Key'),
+    '#default_value' => !empty($site_api_key) ? $site_api_key : 'No API Key yet',
+  ];
+  $form['#submit'][] = 'axelerant_handler';
+}
+
+/**
+ * Implements drupal_handler() on behalf of axelerant.module.
+ */
+function axelerant_handler($form, &$form_state) {
+  $values = $form_state->getValues();
+  // Get the site api key.
+  $site_api_key = \Drupal::config('system.site')->get('site_api_key');
+  // Set the site api key.
+  \Drupal::configFactory()->getEditable('system.site')->set('site_api_key', $values['site_api_key'])->save();
+  drupal_set_message(t('Site API key updated @link', ['@link' => $site_api_key]));
+
+}

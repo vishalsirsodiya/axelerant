@@ -1,0 +1,14 @@
+{
+  "name": "drupal/axelerant",
+  "type": "drupal-module",
+  "description": "This is demo module for axelerant.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/axelerant",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/axelerant",
+    "source": "http://cgit.drupalcode.org/axelerant"
+  },
+  "require": { }
+}
