@@ -1,0 +1,7 @@
+axelerant.axelerant_controller_axelerant_json:
+  path: '/page_json/{key}/{nid}'
+  defaults:
+    _controller: '\Drupal\axelerant\Controller\AxelerantController::axelerant_json'
+    _title: 'axelerant json'
+  requirements:
+    _permission: 'access content'

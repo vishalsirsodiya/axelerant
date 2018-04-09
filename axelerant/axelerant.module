@@ -25,28 +25,24 @@ function axelerant_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_theme().
- */
-function axelerant_theme() {
-  return [
-    'axelerant' => [
-      'render element' => 'children',
-    ],
-  ];
-}
-
-/**
  * Implements hook_form_alter().
  */
 function axelerant_form_system_site_information_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
   // Get the site api key.
   $site_api_key = \Drupal::config('system.site')->get('site_api_key');
+
   // Add field for site api key.
   $form['site_information']['site_api_key'] = [
     '#type' => 'textfield',
     '#title' => t('Site API Key'),
     '#default_value' => !empty($site_api_key) ? $site_api_key : 'No API Key yet',
   ];
+
+  // Site api key check.
+  if (!empty($site_api_key) && $site_api_key !== "No API Key yet") {
+    $form['actions']['submit']['#value'] = t('Update Configuration');
+  }
+
   $form['#submit'][] = 'axelerant_handler';
 }
 
@@ -57,8 +53,26 @@ function axelerant_handler($form, &$form_state) {
   $values = $form_state->getValues();
   // Get the site api key.
   $site_api_key = \Drupal::config('system.site')->get('site_api_key');
-  // Set the site api key.
-  \Drupal::configFactory()->getEditable('system.site')->set('site_api_key', $values['site_api_key'])->save();
-  drupal_set_message(t('Site API key updated @link', ['@link' => $site_api_key]));
 
+  if (!empty($values['site_api_key']) && $values['site_api_key'] !== "No API Key yet") {
+    // Set the site api key.
+    \Drupal::configFactory()->getEditable('system.site')->set('site_api_key', $values['site_api_key'])->save();
+    drupal_set_message(t('Site API Key has been saved with that value : @site_api_key', ['@site_api_key' => $site_api_key]));
+  }
+  else {
+    if ($values['site_api_key'] !== "No API Key yet") {
+      drupal_set_message(t('Please Configure Site API Key.'), 'warning');
+    }
+    else {
+      // If user configure default value.
+      drupal_set_message(t('Please Configure another site api key.'), 'warning');
+    }
+  }
+}
+/**
+ * Implements hook_uninstall().
+ */
+function axelerant_uninstall(){
+    // Remove the previously set Site API Key configuration
+    \Drupal::configFactory()->getEditable('system.site.site_api_key')->delete();
 }
