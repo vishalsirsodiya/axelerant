@@ -31,15 +31,18 @@ function axelerant_form_system_site_information_settings_alter(&$form, FormState
   // Get the site api key.
   $site_api_key = \Drupal::config('system.site')->get('site_api_key');
 
+  // Get default site api key from configuration.
+  $default_site_api_key = \Drupal::config('axelerant.configuration')->get('site_api_key');
+
   // Add field for site api key.
   $form['site_information']['site_api_key'] = [
     '#type' => 'textfield',
     '#title' => t('Site API Key'),
-    '#default_value' => !empty($site_api_key) ? $site_api_key : 'No API Key yet',
+    '#default_value' => !empty($site_api_key) ? $site_api_key : $default_site_api_key,
   ];
 
   // Site api key check.
-  if (!empty($site_api_key) && $site_api_key !== "No API Key yet") {
+  if (!empty($site_api_key) && $site_api_key !== $default_site_api_key) {
     $form['actions']['submit']['#value'] = t('Update Configuration');
   }
 
@@ -53,14 +56,16 @@ function axelerant_handler($form, &$form_state) {
   $values = $form_state->getValues();
   // Get the site api key.
   $site_api_key = \Drupal::config('system.site')->get('site_api_key');
+  // Get default site api key from configuration.
+  $default_site_api_key = \Drupal::config('axelerant.configuration')->get('site_api_key');
 
-  if (!empty($values['site_api_key']) && $values['site_api_key'] !== "No API Key yet") {
+  if (!empty($values['site_api_key']) && $values['site_api_key'] !== $default_site_api_key) {
     // Set the site api key.
     \Drupal::configFactory()->getEditable('system.site')->set('site_api_key', $values['site_api_key'])->save();
     drupal_set_message(t('Site API Key has been saved with that value : @site_api_key', ['@site_api_key' => $site_api_key]));
   }
   else {
-    if ($values['site_api_key'] !== "No API Key yet") {
+    if ($values['site_api_key'] !== $default_site_api_key) {
       drupal_set_message(t('Please Configure Site API Key.'), 'warning');
     }
     else {
@@ -75,5 +80,5 @@ function axelerant_handler($form, &$form_state) {
  */
 function axelerant_uninstall() {
   // Remove the previously set Site API Key configuration.
-  \Drupal::configFactory()->getEditable('system.site.site_api_key')->delete();
+  \Drupal::configFactory()->getEditable('system.site')->clear('site_api_key')->save();
 }
