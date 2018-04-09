@@ -69,10 +69,11 @@ function axelerant_handler($form, &$form_state) {
     }
   }
 }
+
 /**
  * Implements hook_uninstall().
  */
-function axelerant_uninstall(){
-    // Remove the previously set Site API Key configuration
-    \Drupal::configFactory()->getEditable('system.site.site_api_key')->delete();
+function axelerant_uninstall() {
+  // Remove the previously set Site API Key configuration.
+  \Drupal::configFactory()->getEditable('system.site.site_api_key')->delete();
 }
