@@ -31,7 +31,7 @@ http://localhost/page_json/FOOBAR12345/17
 
 /********** Refer below links for this module **************/
 Note :- Module generate by drupal console.
-Time :- 7-8 hours. (I have worked on daily work 1 or 2 hr).
+Time :- 7-8 hours. (I have worked daily 1 or 2 hr).
 
 form_alter :-
 https://drupal.stackexchange.com/questions/156703/how-can-i-add-a-textbox-in-site-information-configuration
